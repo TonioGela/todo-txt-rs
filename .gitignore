@@ -1,0 +1,13 @@
+# Rust build output
+/target
+
+# Nix build output
+/result
+
+# Editor and OS files
+.idea/
+.vscode/
+*.swp
+*~
+.DS_Store
+Thumbs.db

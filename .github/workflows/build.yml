@@ -1,0 +1,72 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            bin: todo
+            asset: todo-txt-rs-linux-x86_64
+          - os: ubuntu-22.04-arm
+            bin: todo
+            asset: todo-txt-rs-linux-aarch64
+          - os: macos-latest
+            bin: todo
+            asset: todo-txt-rs-macos-aarch64
+          - os: macos-15-intel
+            bin: todo
+            asset: todo-txt-rs-macos-x86_64
+          - os: windows-latest
+            bin: todo.exe
+            asset: todo-txt-rs-windows-x86_64.exe
+          - os: windows-11-arm
+            bin: todo.exe
+            asset: todo-txt-rs-windows-aarch64.exe
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Build and test with cargo
+        shell: bash
+        run: |
+          cargo test --release
+          cargo build --release
+          cp "target/release/${{ matrix.bin }}" "${{ matrix.asset }}"
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: ${{ matrix.asset }}
+          path: ${{ matrix.asset }}
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/download-artifact@v8
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Check the tag matches Cargo.toml
+        run: test "$GITHUB_REF_NAME" = "v$(grep -m1 '^version' Cargo.toml | cut -d'"' -f2)"
+
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" dist/* --title "$GITHUB_REF_NAME" --generate-notes
