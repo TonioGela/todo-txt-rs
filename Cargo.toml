@@ -1,0 +1,20 @@
+[package]
+name = "todo-txt-rs"
+version = "0.1.0"
+edition = "2021"
+description = "Inline ratatui front-end for todo.txt, synced with git"
+license = "MIT"
+repository = "https://github.com/TonioGela/todo-txt-rs"
+readme = "README.md"
+keywords = ["todo", "todo-txt", "tui", "ratatui", "cli"]
+categories = ["command-line-utilities"]
+
+[dependencies]
+ratatui = { version = "0.29", default-features = false, features = ["crossterm"] }
+
+[profile.release]
+opt-level = "z"     # optimize for size
+lto = "fat"         # whole-program link-time optimization
+codegen-units = 1   # one codegen unit, better inlining and dead-code removal
+panic = "abort"     # no unwinding tables
+strip = "symbols"   # drop symbol and debug info
