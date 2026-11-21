@@ -34,7 +34,7 @@ jobs:
 
       - name: Build and test with Nix
         if: matrix.nix
-        run: cp "$(nix-build --no-out-link)/bin/todo-txt-rs" "${{ matrix.asset }}"
+        run: cp "$(nix-build --no-out-link)/bin/todo" "${{ matrix.asset }}"
 
       - name: Build and test with cargo
         if: ${{ !matrix.nix }}
@@ -42,7 +42,7 @@ jobs:
         run: |
           cargo test --release
           cargo build --release
-          cp target/release/todo-txt-rs.exe "${{ matrix.asset }}"
+          cp target/release/todo.exe "${{ matrix.asset }}"
 
       - uses: actions/upload-artifact@v7
         with:

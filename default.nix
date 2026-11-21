@@ -24,6 +24,6 @@ pkgs.rustPlatform.buildRustPackage {
     description = cargoToml.package.description;
     homepage = cargoToml.package.repository;
     license = pkgs.lib.licenses.mit;
-    mainProgram = "todo-txt-rs";
+    mainProgram = "todo";
   };
 }

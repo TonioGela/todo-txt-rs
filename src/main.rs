@@ -14,7 +14,8 @@ use ratatui::{
     backend::CrosstermBackend,
     crossterm::{
         event::{self, Event, KeyCode, KeyEvent, KeyEventKind, KeyModifiers},
-        terminal::{disable_raw_mode, enable_raw_mode},
+        execute,
+        terminal::{disable_raw_mode, enable_raw_mode, SetTitle},
     },
     Terminal, TerminalOptions, Viewport,
 };
@@ -457,6 +458,7 @@ fn main() -> io::Result<()> {
     app.clamp();
 
     enable_raw_mode()?;
+    execute!(io::stdout(), SetTitle("todo"))?;
     let mut terminal = Terminal::with_options(
         CrosstermBackend::new(io::stdout()),
         TerminalOptions {

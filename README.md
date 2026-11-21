@@ -1,8 +1,8 @@
 # todo-txt-rs
 
-An inline terminal UI for [todo.txt](https://github.com/todotxt/todo.txt). It reads and writes the
-same files as `todo.sh`, filters by project, context and priority, and keeps the todo directory
-in sync with git.
+![todo-txt-rs in action](todo.gif)
+
+An inline terminal UI for [todo.txt](https://todotxt.org/). It reads and writes the same files as `todo.sh`, filters by project, context and priority, and keeps the todo directory in sync with git.
 
 ## Using it
 
@@ -17,71 +17,38 @@ in sync with git.
 
 The prompt on the bottom line takes the usual arrow, `home`, `end`, `backspace` and `delete` keys.
 
-Filters only show the axes that have values. Project, Context and Priority tabs appear once the
-file has a `+project`, `@context` or `(A)` priority.
+Filters only show the axes that have values. Project, Context and Priority tabs appear once the file has a `+project`, `@context` or `(A)` priority.
 
 ## Where it reads and writes
 
 In order of precedence:
 
 1. Environment variables `TODO_DIR`, `TODO_FILE` and `DONE_FILE`
-2. `~/.todo/config` or `~/.todo.cfg`, the files `todo.sh` uses
-3. `~/.todo`, the default directory of `todo.sh`
+2. `~/.todo/config` or `~/.todo.cfg`, the same files `todo.sh` uses
+3. `~/.todo` is the default directory
 
-If the todo file lives in a git repository, the app runs `git pull --rebase --autostash` when it
-starts. Every change is committed on its own (`todo: add …`, `todo: done …`, and so on), and the
-commit is pushed straight away. Errors appear on the bottom line and clear on the next key press.
-
-## Building with Nix
-
-The build uses the `nixpkgs` pinned in `npins/`, which is the same `nixos-26.05` pin as in your
-global npins. No flakes are needed.
-
-```sh
-nix-build              # builds ./result/bin/todo-txt-rs
-./result/bin/todo-txt-rs
-```
+If the todo file lives in a git repository, the app runs `git pull --rebase --autostash` when it starts. Every change is committed on its own (`todo: add ...`, `todo: done ...`, and so on), and the commit is pushed straight away.
 
 ### Install
 
-Install into your user profile:
+
+## Building with Nix
+
+The build uses the `nixpkgs` pinned in `npins/`. No flakes are needed.
 
 ```sh
-nix-env -f . -i
+nix-build              # builds ./result/bin/todo
+./result/bin/todo
 ```
-
-Remove it again with `nix-env -e todo-txt-rs`.
-
-### Updating nixpkgs
-
-```sh
-npins update nixpkgs
-```
-
-This moves the pin forward. Commit the changed `npins/sources.json` to keep the build reproducible.
 
 ### Without Nix
 
 ```sh
-cargo build --release   # binary at target/release/todo-txt-rs
+cargo build --release   # binary at target/release/todo
 ```
 
-## Releases
-
-`.github/workflows/build.yml` builds and tests on Linux, macOS (both through Nix) and Windows
-(through cargo) for every push and pull request. Pushing a tag such as `v0.1.0` also publishes a
-GitHub release with the three binaries. The tag must match the version in `Cargo.toml`.
+To install it on your `PATH`:
 
 ```sh
-git tag v0.1.0 && git push origin v0.1.0
+cargo install --path .  # installs ~/.cargo/bin/todo
 ```
-
-## Development
-
-```sh
-cargo test
-```
-
-## License
-
-MIT, see [LICENSE](LICENSE).
