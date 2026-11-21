@@ -16,33 +16,33 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            nix: true
+            bin: todo
             asset: todo-txt-rs-linux-x86_64
+          - os: ubuntu-24.04-arm
+            bin: todo
+            asset: todo-txt-rs-linux-aarch64
           - os: macos-latest
-            nix: true
+            bin: todo
             asset: todo-txt-rs-macos-aarch64
+          - os: macos-15-intel
+            bin: todo
+            asset: todo-txt-rs-macos-x86_64
           - os: windows-latest
-            nix: false
+            bin: todo.exe
             asset: todo-txt-rs-windows-x86_64.exe
+          - os: windows-11-arm
+            bin: todo.exe
+            asset: todo-txt-rs-windows-aarch64.exe
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v7
 
-      - name: Install Nix
-        if: matrix.nix
-        uses: cachix/install-nix-action@v32
-
-      - name: Build and test with Nix
-        if: matrix.nix
-        run: cp "$(nix-build --no-out-link)/bin/todo" "${{ matrix.asset }}"
-
       - name: Build and test with cargo
-        if: ${{ !matrix.nix }}
         shell: bash
         run: |
           cargo test --release
           cargo build --release
-          cp target/release/todo.exe "${{ matrix.asset }}"
+          cp "target/release/${{ matrix.bin }}" "${{ matrix.asset }}"
 
       - uses: actions/upload-artifact@v7
         with:

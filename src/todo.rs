@@ -138,7 +138,12 @@ pub struct Store {
 
 impl Store {
     pub fn locate() -> Store {
-        let home = PathBuf::from(env::var_os("HOME").unwrap_or_default());
+        // Windows has no HOME in most shells; USERPROFILE is its home directory.
+        let home = PathBuf::from(
+            env::var_os("HOME")
+                .or_else(|| env::var_os("USERPROFILE"))
+                .unwrap_or_default(),
+        );
         let text = [home.join(".todo/config"), home.join(".todo.cfg")]
             .iter()
             .find_map(|p| fs::read_to_string(p).ok())

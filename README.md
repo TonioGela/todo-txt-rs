@@ -32,6 +32,14 @@ If the todo file lives in a git repository, the app runs `git pull --rebase --au
 ### Install
 
 
+## Requirements
+
+- **`git`** on your `PATH`. The app calls `git` for the pull at startup and for every commit and push. The sync only happens when the todo directory is a git repository; otherwise the app works without `git`.
+  - Linux and macOS: install `git` from your package manager or Xcode Command Line Tools.
+  - Windows: install [Git for Windows](https://gitforwindows.org/) and make sure `git.exe` is on `PATH` (its installer offers this by default). Push over HTTPS uses Git Credential Manager, which Git for Windows includes.
+- **A terminal with raw mode and ANSI support.** Windows Terminal or the classic console on Windows 10 and later.
+- **Home directory:** `$HOME`, or `%USERPROFILE%` on Windows when `HOME` is unset. Config files and the default `.todo` directory are looked up there.
+
 ## Building with Nix
 
 The build uses the `nixpkgs` pinned in `npins/`. No flakes are needed.
